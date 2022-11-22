@@ -13,4 +13,7 @@ export default {
 </script>
 <style>
 @import './assets/style.css';
+* {
+  text-align: center;
+}
 </style>
