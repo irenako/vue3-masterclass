@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import sourceData from '@/data.json'
+import { findById } from '@/helpers'
 export default {
   props: {
     threads: {
@@ -47,18 +47,20 @@ export default {
       required: true
     }
   },
-  data () {
-    return {
-      posts: sourceData.posts,
-      users: sourceData.users
+  computed: {
+    posts () {
+      return this.$store.state.posts
+    },
+    users () {
+      return this.$store.state.users
     }
   },
   methods: {
     postById (postId) {
-      return this.posts.find(p => p.id === postId)
+      return findById(this.posts, postId)
     },
     userById (userId) {
-      return this.users.find(p => p.id === userId)
+      return findById(this.users, userId)
     }
   }
 }

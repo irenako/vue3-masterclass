@@ -5,12 +5,28 @@ import NotFound from '@/components/pages/PageNotFound'
 import sourceData from '@/data.json'
 import PageForum from '@/components/pages/PageForum.vue'
 import Category from '@/components/pages/PageCategories'
+import Profile from '@/components/pages/PageProfile'
+import ThreadCreate from '@/components/pages/PageThreadCreate'
+import ThreadEdit from '@/components/pages/PageThreadEdit'
+import { findById } from '@/helpers'
 
 const routes = [
   {
     path: '/',
     name: 'Home',
     component: PageHome
+  },
+  {
+    path: '/me',
+    name: 'Profile',
+    component: Profile,
+    meta: { toTop: true, smoothScroll: true }
+  },
+  {
+    path: '/me/edit',
+    name: 'ProfileEdit',
+    component: Profile,
+    props: { edit: true }
   },
   {
     path: '/forum/:id',
@@ -31,7 +47,7 @@ const routes = [
     props: true,
     beforeEnter (to, from, next) {
       // check if thread exists
-      const threadExists = sourceData.threads.find(thread => thread.id === to.params.id)
+      const threadExists = findById(sourceData.threads, to.params.id)
       // if exists continue
       if (threadExists) {
         return next()
@@ -51,10 +67,28 @@ const routes = [
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: NotFound
+  },
+  {
+    path: '/forum/:forumId/thread/create',
+    name: 'ThreadCreate',
+    component: ThreadCreate,
+    props: true
+  },
+  {
+    path: '/thread/:id/edit',
+    name: 'ThreadEdit',
+    component: ThreadEdit,
+    props: true
   }
 ]
 
 export default createRouter({
   history: createWebHistory(),
-  routes
+  routes,
+  scrollBehavior (to) {
+    const scroll = {}
+    if (to.meta.toTop) scroll.top = 0
+    if (to.meta.smoothScroll) scroll.behavior = 'smooth'
+    return scroll
+  }
 })

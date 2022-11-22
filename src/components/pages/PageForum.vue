@@ -5,7 +5,9 @@
         <h1>{{ forum.name }}</h1>
         <p class="text-lead">{{ forum.description }}</p>
       </div>
-      <a href="new-thread.html" class="btn-green btn-small">Start a thread</a>
+      <router-link :to="{name:'ThreadCreate', params: {forumId: forum.id}}" class="btn-green btn-small">
+        Start a thread
+      </router-link>
     </div>
   </div>
 
@@ -15,15 +17,10 @@
 </template>
 
 <script>
+import { findById } from '@/helpers'
 import ThreadList from '@/components/ThreadList.vue'
-import sourceData from '@/data.json'
 export default {
   components: { ThreadList },
-  data () {
-    return {
-      forums: sourceData.forums
-    }
-  },
   props: {
     id: {
       required: true,
@@ -32,10 +29,10 @@ export default {
   },
   computed: {
     forum () {
-      return sourceData.forums.find(forum => forum.id === this.id)
+      return findById(this.$store.state.forums, this.id)
     },
     threads () {
-      return sourceData.threads.filter(thread => thread.forumId === this.id)
+      return this.$store.state.threads.filter(thread => thread.forumId === this.id)
     }
   }
 }
