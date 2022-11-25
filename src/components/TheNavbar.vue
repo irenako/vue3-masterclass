@@ -22,17 +22,16 @@
           </a>
           <!-- dropdown menu -->
           <!-- add class "active-drop" to show the dropdown -->
-          <div id="user-dropdown" :class="{'active-drop': userDropdownOpen}">
+          <div id="user-dropdown" :class="{ 'active-drop': userDropdownOpen }">
             <div class="triangle-drop"></div>
             <ul class="dropdown-menu">
               <li class="dropdown-menu-item">
-                <router-link :to="{name: 'Profile'}">View profile</router-link>
+                <router-link :to="{ name: 'Profile' }">View profile</router-link>
               </li>
-              <li class="dropdown-menu-item"><a @click.prevent="$store.dispatch('signOut')">Sign Out</a></li>
+              <li class="dropdown-menu-item"><a @click.prevent="$store.dispatch('auth/signOut')">Sign Out</a></li>
             </ul>
           </div>
         </li>
-        <li v-if="authUser" class="navbar-item"><a @click.prevent="$store.dispatch('signOut')">Sign Out</a></li>
         <li v-if="!authUser" class="navbar-item">
           <router-link :to="{ name: 'SignIn' }">Sign In</router-link>
         </li>
@@ -40,7 +39,6 @@
           <router-link :to="{ name: 'Register' }">Register</router-link>
         </li>
       </ul>
-
       <!--      <ul>-->
       <!--        <li class="navbar-item">-->
       <!--          <a href="index.html">Home</a>-->
@@ -74,10 +72,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['authUser'])
+    ...mapGetters('auth', ['authUser'])
   }
 }
 </script>
+
 <style scoped>
 
 </style>

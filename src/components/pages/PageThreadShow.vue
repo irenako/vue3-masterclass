@@ -22,7 +22,7 @@
 <script>
 import PostList from '@/components/PostList'
 import PostEditor from '@/components/PostEditor'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import asyncDataStatus from '@/mixins/asyncDataStatus'
 export default {
   name: 'ThreadShow',
@@ -38,21 +38,24 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('auth', ['authUser']),
     threads () {
-      return this.$store.state.threads
+      return this.$store.state.threads.items
     },
     posts () {
-      return this.$store.state.posts
+      return this.$store.state.posts.items
     },
     thread () {
-      return this.$store.getters.thread(this.id)
+      return this.$store.getters['threads/thread'](this.id)
     },
     threadPosts () {
       return this.posts.filter(post => post.threadId === this.id)
     }
   },
   methods: {
-    ...mapActions(['fetchThread', 'fetchUsers', 'fetchPosts', 'createPost']),
+    ...mapActions('threads', ['fetchThread']),
+    ...mapActions('users', ['fetchUsers']),
+    ...mapActions('posts', ['fetchPosts', 'createPost']),
     addPost (eventData) {
       const post = {
         ...eventData.post,

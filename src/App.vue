@@ -14,7 +14,7 @@ export default {
   name: 'App',
   components: { TheNavbar },
   methods: {
-    ...mapActions(['fetchAuthUser']),
+    ...mapActions('auth', ['fetchAuthUser']),
     onPageReady () {
       this.showPage = true
       NProgress.done()

@@ -26,7 +26,7 @@ export default {
   },
   computed: {
     forum () {
-      return findById(this.$store.state.forums, this.forumId)
+      return findById(this.$store.state.forums.items, this.forumId)
     }
   },
   methods: {
