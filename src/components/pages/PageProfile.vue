@@ -22,13 +22,19 @@ import PostList from '@/components/PostList'
 import { mapGetters } from 'vuex'
 import UserProfileCard from '../UserProfileCard.vue'
 import UserProfileCardEditor from '@/components/UserProfileCardEditor.vue'
+import asyncDataStatus from '@/mixins/asyncDataStatus'
 export default {
   components: { PostList, UserProfileCard, UserProfileCardEditor },
+  mixins: [asyncDataStatus],
   props: {
     edit: { type: Boolean, default: false }
   },
   computed: {
     ...mapGetters({ user: 'authUser' })
+  },
+  async created () {
+    await this.$store.dispatch('fetchAuthUsersPosts')
+    this.asyncDataStatus_fetched()
   }
 }
 </script>

@@ -9,6 +9,9 @@ export default {
   setAuthUserUnsubscribe (state, unsubscribe) {
     state.authUserUnsubscribe = unsubscribe
   },
+  setAuthObserverUnsubscribe (state, unsubscribe) {
+    state.authObserverUnsubscribe = unsubscribe
+  },
   appendUnsubscribe (state, { unsubscribe }) {
     state.unsubscribes.push(unsubscribe)
   },
@@ -28,7 +31,6 @@ function makeAppendChildToParentMutation ({ parent, child }) {
       return
     }
     resource[child] = resource[child] || []
-
     if (!resource[child].includes(childId)) {
       resource[child].push(childId)
     }

@@ -4,7 +4,8 @@
       Editing <i>{{ thread.title }}</i>
     </h1>
 
-    <ThreadEditor :title="thread.title" :text="text" @save="save" @cancel="cancel" />
+    <ThreadEditor :title="thread.title" :text="text" @save="save" @cancel="cancel" @dirty="formIsDirty = true"
+      @clean="formIsDirty = false" />
   </div>
 </template>
 <script>
@@ -17,6 +18,11 @@ export default {
   mixins: [asyncDataStatus],
   props: {
     id: { type: String, required: true }
+  },
+  data () {
+    return {
+      formIsDirty: false
+    }
   },
   computed: {
     thread () {
@@ -45,6 +51,12 @@ export default {
     const thread = await this.fetchThread({ id: this.id })
     await this.fetchPost({ id: thread.posts[0] })
     this.asyncDataStatus_fetched()
+  },
+  beforeRouteLeave () {
+    if (this.formIsDirty) {
+      const confirmed = window.confirm('Are you sure you want to leave? Unsaved changes will be lost!')
+      if (!confirmed) return false
+    }
   }
 }
 </script>

@@ -2,7 +2,6 @@ import PageHome from '@/components/pages/PageHome'
 import PageThreadShow from '@/components/pages/PageThreadShow'
 import { createRouter, createWebHistory } from 'vue-router'
 import NotFound from '@/components/pages/PageNotFound'
-import sourceData from '@/data.json'
 import PageForum from '@/components/pages/PageForum.vue'
 import Category from '@/components/pages/PageCategories'
 import Profile from '@/components/pages/PageProfile'
@@ -23,19 +22,14 @@ const routes = [
     path: '/me',
     name: 'Profile',
     component: Profile,
-    meta: { toTop: true, smoothScroll: true }
+    meta: { toTop: true, smoothScroll: true, requiresAuth: true }
   },
   {
     path: '/me/edit',
     name: 'ProfileEdit',
     component: Profile,
-    props: { edit: true }
-  },
-  {
-    path: '/forum/:id',
-    name: 'Forum',
-    component: PageForum,
-    props: true
+    props: { edit: true },
+    meta: { requiresAuth: true }
   },
   {
     path: '/category/:id',
@@ -44,57 +38,75 @@ const routes = [
     props: true
   },
   {
+    path: '/forum/:id',
+    name: 'Forum',
+    component: PageForum,
+    props: true
+  },
+  {
     path: '/thread/:id',
     name: 'ThreadShow',
     component: PageThreadShow,
-    props: true
-    // beforeEnter (to, from, next) {
-    //   // check if thread exists
-    //   const threadExists = findById(sourceData.threads, to.params.id)
-    //   // if exists continue
-    //   if (threadExists) {
-    //     return next()
-    //   } else {
-    //     next({
-    //       name: 'NotFound',
-    //       params: { pathMatch: to.path.substring(1).split('/') },
-    //       // preserve existing query and hash
-    //       query: to.query,
-    //       hash: to.hash
-    //     })
-    //   }
-    //   // if doesnt exist redirect to not found
-    // }
-  },
-  {
-    path: '/:pathMatch(.*)*',
-    name: 'NotFound',
-    component: NotFound
+    props: true,
+    async beforeEnter (to, from, next) {
+      await store.dispatch('fetchThread', { id: to.params.id })
+      // check if thread exists
+      const threadExists = findById(store.state.threads, to.params.id)
+      // if exists continue
+      if (threadExists) {
+        return next()
+      } else {
+        next({
+          name: 'NotFound',
+          params: { pathMatch: to.path.substring(1).split('/') },
+          // preserve existing query and hash
+          query: to.query,
+          hash: to.hash
+        })
+      }
+      // if doesnt exist redirect to not found
+    }
   },
   {
     path: '/forum/:forumId/thread/create',
     name: 'ThreadCreate',
     component: ThreadCreate,
-    props: true
+    props: true,
+    meta: { requiresAuth: true }
   },
   {
     path: '/thread/:id/edit',
     name: 'ThreadEdit',
     component: ThreadEdit,
-    props: true
+    props: true,
+    meta: { requiresAuth: true }
   },
   {
     path: '/register',
     name: 'Register',
-    component: Register
+    component: Register,
+    meta: { requiresGuest: true }
   },
   {
     path: '/signin',
     name: 'SignIn',
-    component: SignIn
+    component: SignIn,
+    meta: { requiresGuest: true }
+  },
+  {
+    path: '/logout',
+    name: 'SignOut',
+    async beforeEnter (to, from) {
+      await store.dispatch('signOut')
+      return { name: 'Home' }
+    }
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: NotFound
   }
 ]
-
 const router = createRouter({
   history: createWebHistory(),
   routes,
@@ -105,8 +117,15 @@ const router = createRouter({
     return scroll
   }
 })
-router.beforeEach(() => {
+router.beforeEach(async (to, from) => {
+  await store.dispatch('initAuthentication')
+  console.log(`🚦 navigating to ${to.name} from ${from.name}`)
   store.dispatch('unsubscribeAllSnapshots')
+  if (to.meta.requiresAuth && !store.state.authId) {
+    return { name: 'SignIn', query: { redirectTo: to.path } }
+  }
+  if (to.meta.requiresGuest && store.state.authId) {
+    return { name: 'Home' }
+  }
 })
-
 export default router
