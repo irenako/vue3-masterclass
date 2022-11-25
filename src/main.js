@@ -15,6 +15,12 @@ const firebaseConfig = {
   appId: '1:153929599126:web:9efb50dccd6a83b635dab7'
 }
 const firebaseApp = firebase.initializeApp(firebaseConfig)
+firebase.auth().onAuthStateChanged(user => {
+  store.dispatch('unsubscribeAuthUserSnapshot')
+  if (user) {
+    store.dispatch('fetchAuthUser')
+  }
+})
 const db = firebaseApp.firestore()
 export default db
 

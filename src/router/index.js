@@ -10,6 +10,8 @@ import ThreadCreate from '@/components/pages/PageThreadCreate'
 import ThreadEdit from '@/components/pages/PageThreadEdit'
 import { findById } from '@/helpers'
 import store from '@/store'
+import Register from '@/components/pages/PageRegister'
+import SignIn from '@/components/pages/PageSignin'
 
 const routes = [
   {
@@ -80,6 +82,16 @@ const routes = [
     name: 'ThreadEdit',
     component: ThreadEdit,
     props: true
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: Register
+  },
+  {
+    path: '/signin',
+    name: 'SignIn',
+    component: SignIn
   }
 ]
 
