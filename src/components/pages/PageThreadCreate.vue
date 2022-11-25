@@ -30,7 +30,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['fetchForum', 'createThread']),
+    ...mapActions('forums', ['fetchForum']),
+    ...mapActions('threads', ['createThread']),
     async save ({ title, text }) {
       const thread = await this.createThread({
         forumId: this.forum.id,
