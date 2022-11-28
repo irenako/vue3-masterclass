@@ -1,52 +1,42 @@
-import PageHome from '@/components/pages/PageHome'
-import PageThreadShow from '@/components/pages/PageThreadShow'
 import { createRouter, createWebHistory } from 'vue-router'
-import NotFound from '@/components/pages/PageNotFound'
-import PageForum from '@/components/pages/PageForum.vue'
-import Category from '@/components/pages/PageCategories'
-import Profile from '@/components/pages/PageProfile'
-import ThreadCreate from '@/components/pages/PageThreadCreate'
-import ThreadEdit from '@/components/pages/PageThreadEdit'
 import { findById } from '@/helpers'
 import store from '@/store'
-import Register from '@/components/pages/PageRegister'
-import SignIn from '@/components/pages/PageSignin'
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: PageHome
+    component: () => import(/* webpackChunkName: "Home" */ '@/pages/PageHome')
   },
   {
     path: '/me',
     name: 'Profile',
-    component: Profile,
+    component: () => import(/* webpackChunkName: "Home" */ '@/pages/PageProfile'),
     meta: { toTop: true, smoothScroll: true, requiresAuth: true }
   },
   {
     path: '/me/edit',
     name: 'ProfileEdit',
-    component: Profile,
+    component: () => import(/* webpackChunkName: "Home" */ '@/pages/PageProfile'),
     props: { edit: true },
     meta: { requiresAuth: true }
   },
   {
     path: '/category/:id',
     name: 'Category',
-    component: Category,
+    component: () => import(/* webpackChunkName: "Home" */ '@/pages/Categories'),
     props: true
   },
   {
     path: '/forum/:id',
     name: 'Forum',
-    component: PageForum,
+    component: () => import(/* webpackChunkName: "Home" */ '@/pages/PageForum'),
     props: true
   },
   {
     path: '/thread/:id',
     name: 'ThreadShow',
-    component: PageThreadShow,
+    component: () => import(/* webpackChunkName: "Home" */ '@/pages/PageThreadShow'),
     props: true,
     async beforeEnter (to, from, next) {
       await store.dispatch('threads/fetchThread', { id: to.params.id, once: true })
@@ -70,27 +60,27 @@ const routes = [
   {
     path: '/forum/:forumId/thread/create',
     name: 'ThreadCreate',
-    component: ThreadCreate,
+    component: () => import(/* webpackChunkName: "Home" */ '@/pages/PageThreadCreate'),
     props: true,
     meta: { requiresAuth: true }
   },
   {
     path: '/thread/:id/edit',
     name: 'ThreadEdit',
-    component: ThreadEdit,
+    component: () => import(/* webpackChunkName: "Home" */ '@/pages/PageThreadEdit'),
     props: true,
     meta: { requiresAuth: true }
   },
   {
     path: '/register',
     name: 'Register',
-    component: Register,
+    component: () => import(/* webpackChunkName: "Home" */ '@/pages/PageRegister'),
     meta: { requiresGuest: true }
   },
   {
     path: '/signin',
     name: 'SignIn',
-    component: SignIn,
+    component: () => import(/* webpackChunkName: "Home" */ '@/pages/Signin'),
     meta: { requiresGuest: true }
   },
   {
@@ -104,7 +94,7 @@ const routes = [
   {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
-    component: NotFound
+    component: () => import(/* webpackChunkName: "Home" */ '@/pages/PageNotFound')
   }
 ]
 const router = createRouter({
