@@ -12,6 +12,8 @@
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@fortawesome/vue-fontawesome": "^3.0.2",
     "@hennge/vue3-pagination": "^1.0.17",
+    "@vee-validate/i18n": "^4.7.3",
+    "@vee-validate/rules": "^4.7.3",
     "core-js": "^3.8.3",
     "dayjs": "^1.11.6",
     "firebase": "8",
@@ -20,6 +22,7 @@
     "global": "^4.4.0",
     "lodash": "^4.17.21",
     "nprogress": "^0.2.0",
+    "vee-validate": "^4.7.3",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.2"
