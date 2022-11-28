@@ -1,7 +1,8 @@
 import { findById, docToResource, makeAppendChildToParentMutation, makeFetchItemAction, makeFetchItemsAction } from '@/helpers'
-import firebase from 'firebase'
+import firebase from '@/helpers/firebase'
 import chunk from 'lodash/chunk'
 export default {
+  namespaced: true,
   state: {
     items: []
   },
@@ -19,6 +20,7 @@ export default {
             return thread.posts.length - 1
           },
           get contributorsCount () {
+            if (!thread.contributors) return 0
             return thread.contributors.length
           }
         }
@@ -34,7 +36,6 @@ export default {
       const userRef = firebase.firestore().collection('users').doc(userId)
       const forumRef = firebase.firestore().collection('forums').doc(forumId)
       const batch = firebase.firestore().batch()
-
       batch.set(threadRef, thread)
       batch.update(userRef, {
         threads: firebase.firestore.FieldValue.arrayUnion(threadRef.id)
@@ -44,7 +45,6 @@ export default {
       })
       await batch.commit()
       const newThread = await threadRef.get()
-
       commit('setItem', {
         resource: 'threads',
         item: { ...newThread.data(), id: newThread.id }
@@ -53,7 +53,7 @@ export default {
       )
       commit('users/appendThreadToUser', { parentId: userId, childId: threadRef.id }, { root: true })
       commit('forums/appendThreadToForum', { parentId: forumId, childId: threadRef.id }, { root: true })
-      await dispatch('posts/createPost', { text, threadId: threadRef.id }, { root: true })
+      await dispatch('posts/createPost', { text, threadId: threadRef.id, firstInThread: true }, { root: true })
       return findById(state.items, threadRef.id)
     },
     async updateThread ({ commit, state, rootState }, { title, text, id }) {

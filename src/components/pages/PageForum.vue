@@ -14,7 +14,7 @@
 
   <div class="col-full push-top">
     <ThreadList :threads="threads" />
-    <v-pagination v-model="page" :pages="totalPages" active-color="#57AD8D" @update:modelValue="updateHandler" />
+    <v-pagination v-model="page" :pages="totalPages" active-color="#57AD8D" />
   </div>
   </div>
 </template>
@@ -49,7 +49,7 @@ export default {
         .map(thread => this.$store.getters['threads/thread'](thread.id))
     },
     threadCount () {
-      return this.forum.threads.length
+      return this.forum.threads?.length || 0
     },
     totalPages () {
       if (!this.threadCount) return 0
